@@ -1,3 +1,7 @@
+/* This code is largely based off Edd Mann's blogpost
+ * https://eddmann.com/posts/implementing-a-dynamic-vector-array-in-c/
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 

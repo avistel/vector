@@ -17,13 +17,13 @@ typedef struct vector_t {
     int total;
 } vector_t;
 
-void vector_init(vector_t *);
+int vector_init(vector_t *);
 int vector_total(vector_t *);
-static void vector_resize(vector_t *, int);
-void vector_add(vector_t *, void *);
-void vector_set(vector_t *, int, void *);
+static int vector_resize(vector_t *, int);
+int vector_add(vector_t *, void *);
+int vector_set(vector_t *, int, void *);
 void *vector_get(vector_t *, int);
-void vector_delete(vector_t *, int);
+int vector_delete(vector_t *, int);
 void vector_free(vector_t *);
 
 #endif

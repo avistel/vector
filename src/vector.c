@@ -7,11 +7,17 @@
 
 #include "vector.h"
 
-void vector_init(vector_t *v)
+int vector_init(vector_t *v)
 {
     v->capacity = VECTOR_INIT_CAPACITY;
     v->total = 0;
-    v->items = malloc(sizeof(void *) * v->capacity);
+
+    if (NULL == (v->items = malloc(sizeof(void *) * v->capacity)))
+    {
+        return -1;
+    }
+
+    return 0;
 }
 
 int vector_total(vector_t *v)
@@ -19,26 +25,39 @@ int vector_total(vector_t *v)
     return v->total;
 }
 
-static void vector_resize(vector_t *v, int capacity)
+static int vector_resize(vector_t *v, int capacity)
 {
     void **items = realloc(v->items, sizeof(void *) * capacity);
+
     if (items) {
         v->items = items;
         v->capacity = capacity;
+        return 0;
+    }
+    else
+    {
+        return -1;
     }
 }
 
-void vector_add(vector_t *v, void *item)
+int vector_add(vector_t *v, void *item)
 {
+    int ret = 0;
     if (v->capacity == v->total)
-        vector_resize(v, v->capacity * 2);
+        ret = vector_resize(v, v->capacity * 2);
     v->items[v->total++] = item;
+    return ret;
 }
 
-void vector_set(vector_t *v, int index, void *item)
-{
-    if (index >= 0 && index < v->total)
+int vector_set(vector_t *v, int index, void *item) {
+    if (index >= 0 && index < v->total) {
         v->items[index] = item;
+        return 0;
+    }
+    else
+    {
+        return -1;
+    }
 }
 
 void *vector_get(vector_t *v, int index)
@@ -48,13 +67,14 @@ void *vector_get(vector_t *v, int index)
     return NULL;
 }
 
-void vector_delete(vector_t *v, int index)
+int vector_delete(vector_t *v, int index)
 {
     if (index < 0 || index >= v->total)
-        return;
+        return -1;
 
     v->items[index] = NULL;
-
+    /* DANGER: memory leak possible here if the deleted item is not
+     * deallocated afterwards.*/
     for (int i = index; i < v->total - 1; i++) {
         v->items[i] = v->items[i + 1];
         v->items[i + 1] = NULL;
